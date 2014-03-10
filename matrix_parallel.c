@@ -125,26 +125,24 @@ void matmul(double ** A, double ** B, double ** C, int a_dim1, int a_dim2, int b
 void team_matmul(double ** A, double ** B, double ** C, int row, int common, int col)
 {
 
-  #pragma omp parallel sections 
+  #omp_set_dynamic(1);
+  #omp_set_nested(1);
 
-  #pragma omp section{
-    for ( int i = 0; i < row; ++i) 
+  #pragma omp parallel for schedule(dynamic)
+  for ( int i = 0; i < row; ++i) 
+  {
+    #pragma omp parallel for schedule(dynamic)
+    for (int j = 0; j < col; ++j)
     {
-      #pragma omp section{
-        for (int j = 0; j < col; ++j)
-        {
-          int sum = 0;
-          #pragma omp section{
-            for (int k = 0; k < common; ++k)
-            {
-              sum += A[i][k] * B[k][j];
-            }
-          } 
-          C[i][j] = sum;
-        }
+      int sum = 0;
+      #pragma omp parallel for schedule(dynamic)
+      for (int k = 0; k < common; ++k)
+      {
+        sum += A[i][k] * B[k][j];
       }
+      C[i][j] = sum;
     }
-   } 
+  }
  }
 
 int main(int argc, char ** argv)
