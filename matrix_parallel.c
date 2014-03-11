@@ -125,7 +125,7 @@ void matmul(double ** A, double ** B, double ** C, int a_dim1, int a_dim2, int b
 void team_matmul(double ** A, double ** B, double ** C, int row, int common, int col)
 {
 
-  #omp_set_dynamic(1);
+  omp_set_dynamic(1);
 
   #pragma omp parallel for schedule(dynamic)
   for ( int i = 0; i < row; ++i) 
