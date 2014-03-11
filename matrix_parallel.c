@@ -126,16 +126,13 @@ void team_matmul(double ** A, double ** B, double ** C, int row, int common, int
 {
 
   #omp_set_dynamic(1);
-  #omp_set_nested(1);
 
   #pragma omp parallel for schedule(dynamic)
   for ( int i = 0; i < row; ++i) 
   {
-    #pragma omp parallel for schedule(dynamic)
     for (int j = 0; j < col; ++j)
     {
       int sum = 0;
-      #pragma omp parallel for schedule(dynamic)
       for (int k = 0; k < common; ++k)
       {
         sum += A[i][k] * B[k][j];
