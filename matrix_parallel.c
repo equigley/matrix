@@ -121,12 +121,8 @@ void matmul(double ** A, double ** B, double ** C, int a_dim1, int a_dim2, int b
   }
 }
 
-/* the fast version of matmul written by the team */
-void team_matmul(double ** A, double ** B, double ** C, int row, int common, int col)
-{
-  omp_set_dynamic(1);
+void transpose(double ** B, int common, int col){
 
-  #pragma omp parallel for schedule (guided)
   for (int i = 0; i < common; ++i)
     {
         for (int j = 0; j < col; ++j)
@@ -136,9 +132,23 @@ void team_matmul(double ** A, double ** B, double ** C, int row, int common, int
         }
     }
 
-  #pragma omp parallel for schedule(guided) 
+}
+
+/* the fast version of matmul written by the team */
+void team_matmul(double ** A, double ** B, double ** C, int row, int common, int col)
+{
+  omp_set_dynamic(1);
+  int t = 0;
+
+  #pragma omp parallel for schedule(dynamic) 
   for ( int i = 0; i < row; ++i) 
   {
+
+    if(t == 0){
+      transpose(B, common, col);
+      t++;
+    }
+
     for (int j = 0; j < col; ++j)
     {
       int sum = 0;
