@@ -124,10 +124,19 @@ void matmul(double ** A, double ** B, double ** C, int a_dim1, int a_dim2, int b
 /* the fast version of matmul written by the team */
 void team_matmul(double ** A, double ** B, double ** C, int row, int common, int col)
 {
-
   omp_set_dynamic(1);
 
-  #pragma omp parallel for schedule(dynamic)
+  #pragma omp parallel for schedule (guided)
+  for (int i = 0; i < common; ++i)
+    {
+        for (int j = 0; j < col; ++j)
+        {
+            B[i][j] = B[j][i];
+            // B_transpose is accessed non-sequentially
+        }
+    }
+
+  #pragma omp parallel for schedule(guided) 
   for ( int i = 0; i < row; ++i) 
   {
     for (int j = 0; j < col; ++j)
