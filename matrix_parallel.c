@@ -140,7 +140,7 @@ void team_matmul(double ** A, double ** B, double ** C, int row, int common, int
   omp_set_dynamic(1);
   int t = 0;
 
-  #pragma omp parallel for schedule(dynamic) 
+  #pragma omp parallel for schedule(dynamic) if(col < 150)
   for ( int i = 0; i < row; ++i) 
   {
 
